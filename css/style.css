@@ -27,6 +27,15 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 input, select, textarea, button { font-family: inherit; color: inherit; }
@@ -91,28 +100,29 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
 }
 
 /* ===== VIEWS ===== */
-.view { display: none; }
+.view { display: none; flex: 1; min-height: 0; }
 .view.active { display: block; }
 
 /* ===== EDITOR VIEW ===== */
 #view-editor {
   display: none;
   padding: 16px;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
+  min-height: calc(100dvh - 56px);
 }
 
 #view-editor.active {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 @media (min-width: 768px) {
   #view-editor.active {
     flex-direction: row;
     align-items: flex-start;
-    padding: 24px;
+    padding: 20px 24px;
   }
 }
 
@@ -122,6 +132,13 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .card-stage {
+    width: calc(var(--card-w) + 80px);
+  }
 }
 
 .card-3d {
@@ -284,34 +301,81 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
 
 .card-shine.kryptonite {
   background:
-    radial-gradient(ellipse at 30% 40%, rgba(0,255,0,0.2) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(0,200,0,0.15) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 50%, rgba(0,255,0,0.1) 0%, transparent 70%);
-  animation: kryptoPulse 3s ease-in-out infinite;
+    /* Crystal facets */
+    linear-gradient(135deg, rgba(0,255,65,0.15) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(0,255,65,0.15) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(0,255,65,0.1) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(0,255,65,0.1) 25%, transparent 25%),
+    /* Lightning bolts */
+    linear-gradient(175deg, transparent 40%, rgba(0,255,65,0.25) 40%, rgba(0,255,65,0.25) 41%, transparent 41%),
+    linear-gradient(175deg, transparent 55%, rgba(0,255,65,0.2) 55%, rgba(0,255,65,0.2) 56.5%, transparent 56.5%),
+    linear-gradient(175deg, transparent 70%, rgba(0,255,65,0.25) 70%, rgba(0,255,65,0.25) 71%, transparent 71%),
+    /* Glow spots */
+    radial-gradient(circle at 20% 25%, rgba(0,255,65,0.3) 0%, transparent 15%),
+    radial-gradient(circle at 80% 75%, rgba(0,255,65,0.25) 0%, transparent 12%),
+    radial-gradient(circle at 50% 50%, rgba(0,255,65,0.15) 0%, transparent 20%);
+  background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
 }
 
 .card-shine.ballondor {
   background:
-    radial-gradient(ellipse at 50% 35%, rgba(255,215,0,0.35) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 35%, rgba(255,193,37,0.15) 30%, transparent 60%);
-  animation: oroShimmer 4s ease-in-out infinite;
+    /* Gold radial glow */
+    radial-gradient(ellipse at 50% 30%, rgba(255,215,0,0.25) 0%, transparent 40%),
+    /* Concentric rings */
+    radial-gradient(circle at 50% 30%, transparent 18%, rgba(255,215,0,0.12) 18.5%, transparent 19%),
+    radial-gradient(circle at 50% 30%, transparent 28%, rgba(255,215,0,0.08) 28.5%, transparent 29%),
+    radial-gradient(circle at 50% 30%, transparent 38%, rgba(255,215,0,0.05) 38.5%, transparent 39%),
+    /* Gold leaf patterns */
+    linear-gradient(135deg, transparent 40%, rgba(255,215,0,0.1) 40%, rgba(255,215,0,0.1) 41%, transparent 41%),
+    linear-gradient(225deg, transparent 55%, rgba(255,215,0,0.08) 55%, rgba(255,215,0,0.08) 56%, transparent 56%),
+    /* Sparkle dots */
+    radial-gradient(circle 1px at 25% 20%, rgba(255,215,0,0.5), transparent),
+    radial-gradient(circle 1px at 75% 35%, rgba(255,215,0,0.4), transparent),
+    radial-gradient(circle 1px at 60% 60%, rgba(255,215,0,0.5), transparent),
+    radial-gradient(circle 1px at 35% 70%, rgba(255,215,0,0.4), transparent),
+    radial-gradient(circle 1px at 85% 55%, rgba(255,215,0,0.3), transparent);
 }
 
 .card-shine.diamond {
   background:
-    linear-gradient(135deg, rgba(200,230,255,0.2) 0%, transparent 50%, rgba(200,230,255,0.15) 100%),
-    linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
-  animation: diamondShine 3s ease-in-out infinite;
+    /* Diamond facets - triangular cuts */
+    linear-gradient(60deg, transparent 40%, rgba(200,230,255,0.15) 40%, rgba(200,230,255,0.15) 40.5%, transparent 40.5%),
+    linear-gradient(120deg, transparent 40%, rgba(200,230,255,0.12) 40%, rgba(200,230,255,0.12) 40.5%, transparent 40.5%),
+    linear-gradient(60deg, transparent 60%, rgba(200,230,255,0.15) 60%, rgba(200,230,255,0.15) 60.5%, transparent 60.5%),
+    linear-gradient(120deg, transparent 60%, rgba(200,230,255,0.12) 60%, rgba(200,230,255,0.12) 60.5%, transparent 60.5%),
+    /* Center facet glow */
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 35%),
+    radial-gradient(ellipse at 50% 50%, rgba(200,230,255,0.1) 35%, transparent 50%),
+    /* Sparkle points */
+    radial-gradient(circle 2px at 30% 25%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(circle 2px at 70% 25%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(circle 2px at 50% 15%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(circle 2px at 30% 75%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(circle 2px at 70% 75%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(circle 1px at 45% 40%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(circle 1px at 55% 60%, rgba(255,255,255,0.8), transparent),
+    /* Edge highlights */
+    linear-gradient(0deg, rgba(200,230,255,0.1) 0%, transparent 8%),
+    linear-gradient(180deg, rgba(200,230,255,0.1) 0%, transparent 8%);
 }
 
 .card-shine.molten {
-  background: linear-gradient(135deg,
-    rgba(255,69,0,0.25) 0%,
-    rgba(255,140,0,0.1) 30%,
-    rgba(255,0,0,0.2) 60%,
-    rgba(255,69,0,0.3) 100%
-  );
-  animation: moltenFlow 3s ease-in-out infinite;
+  background:
+    /* Lava cracks */
+    linear-gradient(170deg, transparent 30%, rgba(255,69,0,0.3) 30%, rgba(255,69,0,0.3) 30.5%, transparent 30.5%),
+    linear-gradient(185deg, transparent 45%, rgba(255,140,0,0.25) 45%, rgba(255,140,0,0.25) 45.8%, transparent 45.8%),
+    linear-gradient(165deg, transparent 60%, rgba(255,69,0,0.3) 60%, rgba(255,69,0,0.3) 60.4%, transparent 60.4%),
+    linear-gradient(178deg, transparent 75%, rgba(255,100,0,0.25) 75%, rgba(255,100,0,0.25) 75.6%, transparent 75.6%),
+    /* Ember glow spots */
+    radial-gradient(circle at 15% 20%, rgba(255,69,0,0.4) 0%, transparent 10%),
+    radial-gradient(circle at 85% 30%, rgba(255,140,0,0.35) 0%, transparent 8%),
+    radial-gradient(circle at 50% 50%, rgba(255,69,0,0.3) 0%, transparent 12%),
+    radial-gradient(circle at 25% 80%, rgba(255,100,0,0.4) 0%, transparent 9%),
+    radial-gradient(circle at 75% 70%, rgba(255,69,0,0.35) 0%, transparent 11%),
+    radial-gradient(circle at 40% 35%, rgba(255,200,0,0.2) 0%, transparent 6%),
+    radial-gradient(circle at 65% 85%, rgba(255,69,0,0.3) 0%, transparent 7%),
+    /* Dark base with heat haze */
+    radial-gradient(ellipse at 50% 60%, rgba(255,69,0,0.15) 0%, transparent 60%);
 }
 
 @keyframes holoShift {
@@ -319,25 +383,10 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
   50% { filter: hue-rotate(60deg); }
 }
 
-@keyframes firePulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-@keyframes iceShimmer {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.02); }
-}
-
-@keyframes galaxyRotate {
-  from { transform: rotate(0deg) scale(1.5); }
-  to { transform: rotate(360deg) scale(1.5); }
-}
-
-@keyframes neonPulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
+@keyframes firePulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+@keyframes iceShimmer { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+@keyframes galaxyRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes neonPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
 /* Card header */
 .card-header {
@@ -550,6 +599,38 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
   z-index: 3;
 }
 
+/* Vertical badges for special cards */
+.card-vertical-badge {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.42rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 3px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.card-vertical-badge.ballondor {
+  color: #ffd700;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,215,0,0.5);
+  text-shadow: 0 0 6px rgba(255,215,0,0.5);
+}
+
+.card-vertical-badge.kryptonite {
+  color: #00ff41;
+  background: rgba(0,20,0,0.6);
+  border: 1px solid rgba(0,255,65,0.5);
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+}
+
 /* ===== CARD BACK ===== */
 .card-back-inner {
   width: 100%;
@@ -653,6 +734,15 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
 .editor-panels {
   flex: 1;
   min-width: 0;
+  overflow-y: auto;
+  max-height: calc(100dvh - 120px);
+}
+
+@media (min-width: 768px) {
+  .editor-panels {
+    max-height: calc(100dvh - 100px);
+    padding-left: 12px;
+  }
 }
 
 .editor-tabs {
@@ -1042,9 +1132,10 @@ input[type="range"]::-moz-range-thumb {
   padding: 16px;
   max-width: 1200px;
   margin: 0 auto;
+  flex: 1;
 }
 
-#view-album.active { display: block; }
+#view-album.active { display: block; overflow-y: auto; }
 
 .album-toolbar {
   display: flex;
@@ -1457,4 +1548,23 @@ input[type="range"]::-moz-range-thumb {
     flex-direction: row !important;
   }
   .card-3d { width: 200px !important; }
+}
+
+/* ===== APP FOOTER ===== */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.65rem;
+  color: var(--text2);
+}
+
+.app-footer span:not(:first-child)::before {
+  content: '·';
+  margin-right: 12px;
+  opacity: 0.3;
 }

@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Update deploy info
+        run: echo "{\"deployedAt\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"}" > deploy-info.json
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

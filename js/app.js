@@ -2,6 +2,7 @@
   'use strict';
 
   /* ===== CONSTANTS ===== */
+  const VERSION = '1.1.0';
   const CARD_RATIO = 2 / 3;
   const EXPORT_SCALE = 3;
   const EXPORT_W = 600;
@@ -63,6 +64,17 @@
   }
 
   function stars(n) { return '\u2605'.repeat(n) + '\u2606'.repeat(5 - n); }
+
+  function hashStr(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    return Math.abs(h);
+  }
+
+  function seededRng(seed) {
+    let s = seed;
+    return () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; };
+  }
 
   /* ===== NAVIGATION ===== */
   $$('.nav-tab').forEach(tab => {
@@ -127,11 +139,18 @@
 
     const shineClass = d.specialBg !== 'default' ? ` card-shine ${d.specialBg}` : '';
 
+    const badgeHTML = d.specialBg === 'ballondor'
+      ? '<div class="card-vertical-badge ballondor">Ballon d\'Or</div>'
+      : d.specialBg === 'kryptonite'
+        ? '<div class="card-vertical-badge kryptonite">Kryptonite</div>'
+        : '';
+
     container.innerHTML = `
       <div class="card" style="--card-accent:${accent}">
         <div class="card-bg-layer" style="${bgStyle}"></div>
         ${d.pattern !== 'none' ? buildPattern(d.pattern) : ''}
         <div class="card-shine${shineClass}"></div>
+        ${badgeHTML}
         <div class="card-border-layer" style="border-color:${accent}"></div>
         <div class="card-header">
           <div class="card-rating">
@@ -585,20 +604,46 @@
 
 /* ===== CANVAS EXPORT (proper 2:3 aspect ratio) ===== */
    function drawStar(ctx, cx, cy, spikes, outerR, innerR) {
-     let rot = Math.PI / 2 * 3;
-     const step = Math.PI / spikes;
-     ctx.beginPath();
-     ctx.moveTo(cx, cy - outerR);
-     for (let i = 0; i < spikes; i++) {
-       ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR);
-       rot += step;
-       ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR);
-       rot += step;
-     }
-     ctx.closePath();
-     ctx.fillStyle = 'rgba(255,215,0,0.3)';
-     ctx.fill();
-   }
+      let rot = Math.PI / 2 * 3;
+      const step = Math.PI / spikes;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerR);
+      for (let i = 0; i < spikes; i++) {
+        ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR);
+        rot += step;
+        ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR);
+        rot += step;
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,215,0,0.3)';
+      ctx.fill();
+    }
+
+    function drawVerticalBadge(ctx, W, H, text, color, bgColor, borderColor) {
+      const badgeW = 28;
+      const badgeH = 200;
+      const x = W - badgeW - 12;
+      const y = (H - badgeH) / 2;
+
+      ctx.save();
+      ctx.fillStyle = bgColor;
+      roundRect(ctx, x, y, badgeW, badgeH, 4);
+      ctx.fill();
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, x, y, badgeW, badgeH, 4);
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.save();
+      ctx.translate(x + badgeW / 2, y + badgeH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(text, 0, 4);
+      ctx.restore();
+      ctx.restore();
+    }
 
    function drawCardToCanvas(canvas, data, mini) {
     const ctx = canvas.getContext('2d');
@@ -683,100 +728,213 @@
       }
       ctx.restore();
     } else if (d.specialBg === 'kryptonite') {
-      /* Green crystalline effect */
+      /* Green crystalline effect - fixed pattern */
       ctx.save();
-      for (let i = 0; i < 15; i++) {
-        const cx = Math.random() * W, cy = Math.random() * H;
-        const cs = Math.random() * 60 + 30;
+      const seed = hashStr(d.name || 'krypto');
+      const rng = seededRng(seed);
+      /* Crystal shapes */
+      const crystals = [
+        {x: W*0.15, y: H*0.2, s: 80}, {x: W*0.85, y: H*0.3, s: 70},
+        {x: W*0.5, y: H*0.5, s: 90}, {x: W*0.2, y: H*0.7, s: 60},
+        {x: W*0.75, y: H*0.75, s: 75}, {x: W*0.4, y: H*0.15, s: 50},
+        {x: W*0.6, y: H*0.85, s: 55},
+      ];
+      crystals.forEach(c => {
         ctx.beginPath();
-        ctx.moveTo(cx, cy - cs);
-        ctx.lineTo(cx + cs * 0.6, cy);
-        ctx.lineTo(cx, cy + cs);
-        ctx.lineTo(cx - cs * 0.6, cy);
+        ctx.moveTo(c.x, c.y - c.s);
+        ctx.lineTo(c.x + c.s * 0.6, c.y);
+        ctx.lineTo(c.x, c.y + c.s);
+        ctx.lineTo(c.x - c.s * 0.6, c.y);
         ctx.closePath();
-        ctx.fillStyle = `rgba(0,${180+Math.random()*75},0,${Math.random()*0.12+0.05})`;
+        ctx.fillStyle = 'rgba(0,255,65,0.08)';
         ctx.fill();
-        ctx.strokeStyle = `rgba(0,255,0,${Math.random()*0.2+0.1})`;
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(0,255,65,0.25)';
+        ctx.lineWidth = 1.5;
         ctx.stroke();
-      }
-      const kg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.6);
-      kg.addColorStop(0, 'rgba(0,255,0,0.15)');
-      kg.addColorStop(1, 'rgba(0,100,0,0.1)');
-      ctx.fillStyle = kg;
-      ctx.fillRect(0, 0, W, H);
+      });
+      /* Lightning bolts */
+      const bolts = [
+        [{x:0.3,y:0}, {x:0.35,y:0.15}, {x:0.28,y:0.3}, {x:0.33,y:0.45}, {x:0.3,y:0.6}],
+        [{x:0.7,y:0.2}, {x:0.65,y:0.35}, {x:0.72,y:0.5}, {x:0.68,y:0.65}, {x:0.7,y:0.8}],
+      ];
+      bolts.forEach(bolt => {
+        ctx.beginPath();
+        ctx.moveTo(bolt[0].x * W, bolt[0].y * H);
+        for (let i = 1; i < bolt.length; i++) {
+          ctx.lineTo(bolt[i].x * W, bolt[i].y * H);
+        }
+        ctx.strokeStyle = 'rgba(0,255,65,0.3)';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(0,255,65,0.15)';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+      });
+      /* Glow spots */
+      const glows = [
+        {x: W*0.2, y: H*0.25, r: 60}, {x: W*0.8, y: H*0.75, r: 50},
+        {x: W*0.5, y: H*0.5, r: 80},
+      ];
+      glows.forEach(g => {
+        const rg = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
+        rg.addColorStop(0, 'rgba(0,255,65,0.2)');
+        rg.addColorStop(1, 'transparent');
+        ctx.fillStyle = rg;
+        ctx.fillRect(g.x - g.r, g.y - g.r, g.r * 2, g.r * 2);
+      });
       ctx.restore();
     } else if (d.specialBg === 'ballondor') {
-      /* Golden ballon d'or effect */
-      const bg = ctx.createRadialGradient(W/2, H*0.35, 0, W/2, H*0.35, W*0.7);
-      bg.addColorStop(0, 'rgba(255,215,0,0.25)');
-      bg.addColorStop(0.5, 'rgba(255,193,37,0.1)');
-      bg.addColorStop(1, 'rgba(184,134,11,0.05)');
-      ctx.fillStyle = bg;
+      /* Golden ballon d'or effect - fixed pattern */
+      ctx.save();
+      /* Golden radial glow */
+      const rg = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H*0.3, W*0.6);
+      rg.addColorStop(0, 'rgba(255,215,0,0.3)');
+      rg.addColorStop(0.5, 'rgba(255,193,37,0.1)');
+      rg.addColorStop(1, 'transparent');
+      ctx.fillStyle = rg;
       ctx.fillRect(0, 0, W, H);
-      /* Shimmer lines */
-      ctx.save();
-      ctx.globalAlpha = 0.08;
-      for (let i = 0; i < 20; i++) {
-        const y = Math.random() * H;
+      /* Concentric rings */
+      [0.18, 0.28, 0.38].forEach(pct => {
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y + (Math.random()-0.5)*30);
-        ctx.strokeStyle = `rgba(255,215,0,${Math.random()*0.5+0.5})`;
-        ctx.lineWidth = Math.random() * 3 + 1;
+        ctx.arc(W/2, H*0.3, W * pct, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,215,0,0.12)';
+        ctx.lineWidth = 2;
         ctx.stroke();
-      }
-      ctx.restore();
-      /* Star sparkles */
-      for (let i = 0; i < 8; i++) {
-        const sx = Math.random() * W, sy = Math.random() * H;
-        drawStar(ctx, sx, sy, 5, Math.random()*8+4, Math.random()*4+2);
-      }
-    } else if (d.specialBg === 'diamond') {
-      /* Diamond/brilliant effect */
-      ctx.save();
-      for (let i = 0; i < 12; i++) {
-        const cx = Math.random() * W, cy = Math.random() * H;
-        const cs = Math.random() * 40 + 20;
+      });
+      /* Gold leaf lines */
+      const leafLines = [
+        [{x:0,y:0.4}, {x:1,y:0.42}], [{x:0,y:0.55}, {x:1,y:0.53}],
+      ];
+      leafLines.forEach(line => {
         ctx.beginPath();
-        ctx.moveTo(cx, cy - cs);
-        ctx.lineTo(cx + cs * 0.7, cy);
-        ctx.lineTo(cx, cy + cs);
-        ctx.lineTo(cx - cs * 0.7, cy);
+        ctx.moveTo(line[0].x * W, line[0].y * H);
+        ctx.lineTo(line[1].x * W, line[1].y * H);
+        ctx.strokeStyle = 'rgba(255,215,0,0.15)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+      /* Sparkle dots */
+      const sparkles = [
+        {x: W*0.25, y: H*0.2}, {x: W*0.75, y: H*0.35},
+        {x: W*0.6, y: H*0.6}, {x: W*0.35, y: H*0.7},
+        {x: W*0.85, y: H*0.55},
+      ];
+      sparkles.forEach(s => {
+        const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 6);
+        sg.addColorStop(0, 'rgba(255,215,0,0.6)');
+        sg.addColorStop(1, 'transparent');
+        ctx.fillStyle = sg;
+        ctx.fillRect(s.x - 6, s.y - 6, 12, 12);
+      });
+      /* Golden ball icon */
+      ctx.beginPath();
+      ctx.arc(W/2, H*0.3, 30, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,215,0,0.15)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,215,0,0.3)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    } else if (d.specialBg === 'diamond') {
+      /* Diamond/brilliant effect - fixed facets */
+      ctx.save();
+      /* Diamond facet lines */
+      const facetLines = [
+        [{x:0.3,y:0.2}, {x:0.5,y:0.4}], [{x:0.7,y:0.2}, {x:0.5,y:0.4}],
+        [{x:0.3,y:0.8}, {x:0.5,y:0.6}], [{x:0.7,y:0.8}, {x:0.5,y:0.6}],
+        [{x:0.2,y:0.5}, {x:0.8,y:0.5}],
+      ];
+      facetLines.forEach(line => {
+        ctx.beginPath();
+        ctx.moveTo(line[0].x * W, line[0].y * H);
+        ctx.lineTo(line[1].x * W, line[1].y * H);
+        ctx.strokeStyle = 'rgba(200,230,255,0.15)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+      /* Center facet glow */
+      const cg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.35);
+      cg.addColorStop(0, 'rgba(255,255,255,0.2)');
+      cg.addColorStop(0.5, 'rgba(200,230,255,0.1)');
+      cg.addColorStop(1, 'transparent');
+      ctx.fillStyle = cg;
+      ctx.fillRect(0, 0, W, H);
+      /* Sparkle points */
+      const sparklePts = [
+        {x: W*0.3, y: H*0.25}, {x: W*0.7, y: H*0.25},
+        {x: W*0.5, y: H*0.15}, {x: W*0.3, y: H*0.75},
+        {x: W*0.7, y: H*0.75},
+      ];
+      sparklePts.forEach(s => {
+        const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 4);
+        sg.addColorStop(0, 'rgba(255,255,255,0.7)');
+        sg.addColorStop(1, 'transparent');
+        ctx.fillStyle = sg;
+        ctx.fillRect(s.x - 4, s.y - 4, 8, 8);
+      });
+      /* Diamond shapes */
+      const diamonds = [
+        {x: W*0.5, y: H*0.5, s: 100}, {x: W*0.3, y: H*0.3, s: 50},
+        {x: W*0.7, y: H*0.7, s: 50},
+      ];
+      diamonds.forEach(d => {
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y - d.s);
+        ctx.lineTo(d.x + d.s * 0.7, d.y);
+        ctx.lineTo(d.x, d.y + d.s);
+        ctx.lineTo(d.x - d.s * 0.7, d.y);
         ctx.closePath();
-        const dg = ctx.createLinearGradient(cx - cs, cy - cs, cx + cs, cy + cs);
-        dg.addColorStop(0, 'rgba(200,230,255,0.15)');
-        dg.addColorStop(0.5, 'rgba(255,255,255,0.25)');
-        dg.addColorStop(1, 'rgba(200,230,255,0.15)');
+        const dg = ctx.createLinearGradient(d.x - d.s, d.y - d.s, d.x + d.s, d.y + d.s);
+        dg.addColorStop(0, 'rgba(200,230,255,0.1)');
+        dg.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+        dg.addColorStop(1, 'rgba(200,230,255,0.1)');
         ctx.fillStyle = dg;
         ctx.fill();
-      }
+      });
       ctx.restore();
     } else if (d.specialBg === 'molten') {
-      /* Molten lava effect */
-      const mg = ctx.createLinearGradient(0, 0, W, H);
-      mg.addColorStop(0, 'rgba(255,69,0,0.2)');
-      mg.addColorStop(0.3, 'rgba(255,140,0,0.1)');
-      mg.addColorStop(0.6, 'rgba(255,0,0,0.15)');
-      mg.addColorStop(1, 'rgba(255,69,0,0.25)');
-      ctx.fillStyle = mg;
-      ctx.fillRect(0, 0, W, H);
-      /* Lava veins */
+      /* Molten lava effect - fixed pattern */
       ctx.save();
-      ctx.globalAlpha = 0.15;
-      for (let i = 0; i < 10; i++) {
+      /* Lava cracks */
+      const cracks = [
+        [{x:0.15,y:0}, {x:0.18,y:0.15}, {x:0.12,y:0.3}, {x:0.16,y:0.45}, {x:0.14,y:0.6}, {x:0.15,y:1}],
+        [{x:0.85,y:0}, {x:0.82,y:0.2}, {x:0.88,y:0.35}, {x:0.84,y:0.5}, {x:0.86,y:0.65}, {x:0.85,y:1}],
+        [{x:0.5,y:0}, {x:0.48,y:0.25}, {x:0.52,y:0.5}, {x:0.49,y:0.75}, {x:0.5,y:1}],
+      ];
+      cracks.forEach(crack => {
         ctx.beginPath();
-        let lx = Math.random() * W, ly = 0;
-        ctx.moveTo(lx, ly);
-        while (ly < H) {
-          lx += (Math.random() - 0.5) * 40;
-          ly += Math.random() * 30 + 10;
-          ctx.lineTo(lx, ly);
+        ctx.moveTo(crack[0].x * W, crack[0].y * H);
+        for (let i = 1; i < crack.length; i++) {
+          ctx.lineTo(crack[i].x * W, crack[i].y * H);
         }
-        ctx.strokeStyle = `rgba(255,${Math.random()*100+50},0,${Math.random()*0.5+0.3})`;
-        ctx.lineWidth = Math.random() * 4 + 2;
+        ctx.strokeStyle = 'rgba(255,69,0,0.3)';
+        ctx.lineWidth = 3;
         ctx.stroke();
-      }
+        ctx.strokeStyle = 'rgba(255,140,0,0.15)';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+      });
+      /* Ember glow spots */
+      const embers = [
+        {x: W*0.15, y: H*0.2, r: 40}, {x: W*0.85, y: H*0.3, r: 35},
+        {x: W*0.5, y: H*0.5, r: 50}, {x: W*0.25, y: H*0.8, r: 35},
+        {x: W*0.75, y: H*0.7, r: 40}, {x: W*0.4, y: H*0.35, r: 25},
+        {x: W*0.65, y: H*0.85, r: 30},
+      ];
+      embers.forEach(e => {
+        const eg = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r);
+        eg.addColorStop(0, 'rgba(255,69,0,0.3)');
+        eg.addColorStop(0.5, 'rgba(255,140,0,0.15)');
+        eg.addColorStop(1, 'transparent');
+        ctx.fillStyle = eg;
+        ctx.fillRect(e.x - e.r, e.y - e.r, e.r * 2, e.r * 2);
+      });
+      /* Base heat glow */
+      const hg = ctx.createRadialGradient(W/2, H*0.6, 0, W/2, H*0.6, W*0.6);
+      hg.addColorStop(0, 'rgba(255,69,0,0.1)');
+      hg.addColorStop(1, 'transparent');
+      ctx.fillStyle = hg;
+      ctx.fillRect(0, 0, W, H);
       ctx.restore();
     } else if (d.specialBg === 'holographic') {
       const hg = ctx.createLinearGradient(0, 0, W, H);
@@ -799,6 +957,13 @@
     ctx.lineWidth = 2;
     roundRect(ctx, 12, 12, W - 24, H - 24, r - 8);
     ctx.stroke();
+
+    /* Vertical badge for special cards */
+    if (d.specialBg === 'ballondor') {
+      drawVerticalBadge(ctx, W, H, 'Ballon d\'Or', '#ffd700', 'rgba(0,0,0,0.6)', 'rgba(255,215,0,0.5)');
+    } else if (d.specialBg === 'kryptonite') {
+      drawVerticalBadge(ctx, W, H, 'Kryptonite', '#00ff41', 'rgba(0,20,0,0.6)', 'rgba(0,255,65,0.5)');
+    }
 
     /* Rating */
     ctx.fillStyle = '#f1c40f';
@@ -1302,6 +1467,13 @@
       saveToAlbum();
     }
   });
+
+  /* ===== VERSION / DEPLOY INFO ===== */
+  $('#app-version').textContent = `v${VERSION}`;
+  fetch('deploy-info.json')
+    .then(r => r.json())
+    .then(d => { $('#app-deploy').textContent = new Date(d.deployedAt).toLocaleString('es-ES'); })
+    .catch(() => { $('#app-deploy').textContent = 'local'; });
 
   /* ===== INIT ===== */
   renderCard();
