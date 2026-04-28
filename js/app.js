@@ -556,7 +556,6 @@
       const ovr = c.overall || calcOverallFor(c);
       return `
         <div class="album-card" data-id="${c.id}" onclick="window.openDetail(${c.id})">
-          <div class="album-card-ovr" style="color:#f1c40f">${ovr}</div>
           <canvas class="album-thumb" width="300" height="450" data-id="${c.id}"></canvas>
           <div class="album-card-overlay">
             <span class="album-card-name">${c.name || 'Sin nombre'}</span>
@@ -909,7 +908,6 @@
 
     return new Promise(resolve => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
       img.onload = function () {
         const ctx = canvas.getContext('2d');
         const W = canvas.width, H = canvas.height;

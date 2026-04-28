@@ -1136,16 +1136,6 @@ input[type="range"]::-moz-range-thumb {
   text-transform: uppercase;
 }
 
-.album-card-ovr {
-  position: absolute;
-  top: 6px;
-  left: 8px;
-  font-size: 0.85rem;
-  font-weight: 900;
-  color: var(--accent);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-}
-
 .album-empty {
   text-align: center;
   padding: 60px 20px;
