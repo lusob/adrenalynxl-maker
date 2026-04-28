@@ -1,0 +1,32 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "http://192.168.1.129:8081/v1",
+      "name": "llama.cpp local",
+      "models": {
+        "unsloth/Qwen3.6-27B-GGUF:Q4_K_M": {
+          "id": "unsloth/Qwen3.6-27B-GGUF:Q4_K_M",
+          "name": "Qwen3.6 27B Q4_K_M",
+          "attachment": false,
+          "reasoning": false,
+          "tool_call": true,
+          "temperature": true,
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
+        }
+      },
+      "options": {
+        "apiKey": "local"
+      }
+    }
+  },
+  "model": "llamacpp/unsloth/Qwen3.6-27B-GGUF:Q4_K_M"
+}

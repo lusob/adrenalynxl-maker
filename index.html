@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Diseñador de cromos AdrenalynXL con álbum">
+  <meta name="theme-color" content="#0a0a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AdrenalynXL Card Maker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+</head>
+<body>
+  <div id="app">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="logo" id="btn-home">⚽ AXL Maker</button>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-view="editor">✏️ Editor</button>
+        <button class="nav-tab" data-view="album">📒 Álbum <span id="album-count" class="badge">0</span></button>
+      </nav>
+    </header>
+
+    <!-- EDITOR VIEW -->
+    <main id="view-editor" class="view active">
+      <!-- Card 3D container -->
+      <div class="card-stage">
+        <div class="card-3d" id="card-3d">
+          <div class="card-face card-front" id="card-front">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="card-face card-back" id="card-back">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div class="card-stage-controls">
+          <button class="stage-btn" id="btn-flip" title="Voltear">🔄</button>
+          <button class="stage-btn" id="btn-export-front" title="Exportar cara frontal">📷</button>
+          <button class="stage-btn" id="btn-export-back" title="Exportar revés">📸</button>
+          <button class="stage-btn" id="btn-export-both" title="Exportar ambas caras">🖼️</button>
+        </div>
+      </div>
+
+      <!-- Editor panels -->
+      <div class="editor-panels">
+        <div class="editor-tabs">
+          <button class="editor-tab active" data-panel="player">Jugador</button>
+          <button class="editor-tab" data-panel="stats">Stats</button>
+          <button class="editor-tab" data-panel="style">Estilo</button>
+          <button class="editor-tab" data-panel="back">Revés</button>
+        </div>
+
+        <!-- Player -->
+        <div class="panel active" id="panel-player">
+          <div class="field">
+            <label>Foto</label>
+            <div class="photo-zone">
+              <input type="file" id="input-photo" accept="image/*" hidden>
+              <button class="btn btn-sm" onclick="document.getElementById('input-photo').click()">📸 Subir</button>
+              <button class="btn btn-sm btn-ghost" id="btn-remove-photo" style="display:none">✕</button>
+              <span id="photo-label" class="hint">Sin foto</span>
+            </div>
+            <div class="photo-url-zone">
+              <input type="url" id="input-photo-url" class="photo-url-input" placeholder="https://...jugador.png">
+              <button class="btn btn-sm" id="btn-load-photo-url">Cargar</button>
+            </div>
+            <button class="btn btn-sm" id="btn-search-images" style="margin-top:8px;width:100%">🔍 Buscar jugador en internet</button>
+          </div>
+          <div class="field">
+            <label>Nombre</label>
+            <input type="text" id="input-name" placeholder="Lionel Messi" maxlength="20">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Dorsal</label>
+              <input type="number" id="input-number" min="1" max="99" placeholder="10">
+            </div>
+            <div class="field">
+              <label>Posición</label>
+              <select id="input-position">
+                <option value="POR">POR</option>
+                <option value="DEF">DEF</option>
+                <option value="MED" selected>MED</option>
+                <option value="DEL">DEL</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Equipo</label>
+            <input type="text" id="input-team" placeholder="FC Barcelona" maxlength="25">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Liga</label>
+              <select id="input-league">
+                <option value="LaLiga">LaLiga</option>
+                <option value="Premier">Premier League</option>
+                <option value="Serie A">Serie A</option>
+                <option value="Ligue 1">Ligue 1</option>
+                <option value="Bundesliga">Bundesliga</option>
+                <option value="UCL">Champions League</option>
+                <option value="UEL">Europa League</option>
+                <option value="Nations">Nations League</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>País</label>
+              <input type="text" id="input-country" placeholder="Argentina" maxlength="20">
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="panel" id="panel-stats">
+          <div class="field overall-field">
+            <label>Global (OVR)</label>
+            <span id="overall-val" class="overall-badge" style="background:#f1c40f;color:#000">0</span>
+          </div>
+          <div class="field stat-field">
+            <label style="color:#e74c3c">DEF <span id="val-stat-def" style="float:right">50</span></label>
+            <input type="range" id="input-stat-def" min="0" max="101" value="50">
+          </div>
+          <div class="field stat-field">
+            <label style="color:#3498db">CON <span id="val-stat-con" style="float:right">60</span></label>
+            <input type="range" id="input-stat-con" min="0" max="101" value="60">
+          </div>
+          <div class="field stat-field">
+            <label style="color:#2ecc71">ATA <span id="val-stat-ata" style="float:right">55</span></label>
+            <input type="range" id="input-stat-ata" min="0" max="101" value="55">
+          </div>
+          <div class="field">
+            <label>Habilidades</label>
+            <div class="skills-row">
+              <div class="skill">
+                <span>Velocidad</span>
+                <div class="stars" id="skill-speed">★★★☆☆</div>
+                <input type="range" class="skill-range" id="input-skill-speed" min="0" max="5" value="3">
+              </div>
+              <div class="skill">
+                <span>Control</span>
+                <div class="stars" id="skill-control">★★★★☆</div>
+                <input type="range" class="skill-range" id="input-skill-control" min="0" max="5" value="4">
+              </div>
+              <div class="skill">
+                <span>Fuerza</span>
+                <div class="stars" id="skill-strength">★★☆☆☆</div>
+                <input type="range" class="skill-range" id="input-skill-strength" min="0" max="5" value="2">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Style -->
+        <div class="panel" id="panel-style">
+          <div class="field">
+            <label>Tipo de cróm</label>
+            <div class="type-grid">
+              <button class="type-btn active" data-type="gold">🥇 Oro</button>
+              <button class="type-btn" data-type="special">⭐ Especial</button>
+              <button class="type-btn" data-type="legend">👑 Leyenda</button>
+              <button class="type-btn" data-type="holographic">🌈 Holo</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Fondo especial</label>
+            <div class="type-grid">
+              <button class="bg-btn active" data-bg="default">Normal</button>
+              <button class="bg-btn" data-bg="holographic">🌈 Holográfico</button>
+              <button class="bg-btn" data-bg="kryptonite">💎 Kryptonita</button>
+              <button class="bg-btn" data-bg="ballondor">⚽ Balón de Oro</button>
+              <button class="bg-btn" data-bg="diamond">💠 Diamante</button>
+              <button class="bg-btn" data-bg="molten">🌋 Lava</button>
+            </div>
+          </div>
+          </div>
+          <div class="field">
+            <label class="toggle-label">
+              <input type="checkbox" id="input-special">
+              <span class="toggle"></span>
+              Edición especial
+            </label>
+          </div>
+          <div class="field" id="special-num-field" style="display:none">
+            <label>Número edición</label>
+            <input type="text" id="input-special-num" placeholder="125/500">
+          </div>
+        </div>
+
+        <!-- Back / Revés -->
+        <div class="panel" id="panel-back">
+          <div class="field">
+            <label>Estilo del revés</label>
+            <div class="type-grid">
+              <button class="back-btn active" data-back="classic">Clásico</button>
+              <button class="back-btn" data-back="modern">Moderno</button>
+              <button class="back-btn" data-back="minimal">Minimal</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Color del revés</label>
+            <input type="color" id="input-back-color" value="#0d1b3e">
+          </div>
+          <div class="field">
+            <label>Logo / Texto superior</label>
+            <input type="text" id="input-back-logo" placeholder="ADRENALYN XL" maxlength="25">
+          </div>
+          <div class="field">
+            <label>Texto central</label>
+            <textarea id="input-back-text" rows="3" placeholder="Texto que aparece en el centro del revés"></textarea>
+          </div>
+          <div class="field">
+            <label>URL logo imagen (opcional)</label>
+            <input type="text" id="input-back-logoimg" placeholder="https://...logo.png">
+            <button class="btn btn-sm" id="btn-search-logo" style="margin-top:6px;width:100%">🔍 Buscar imagen de logo</button>
+          </div>
+        </div>
+
+        <!-- Save button -->
+        <div class="save-zone">
+          <button class="btn btn-primary" id="btn-save-album">💾 Guardar en Álbum</button>
+          <button class="btn btn-ghost" id="btn-clear">🗑️ Limpiar</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ALBUM VIEW -->
+    <main id="view-album" class="view">
+      <div class="album-toolbar">
+        <input type="text" id="album-search" class="search-input" placeholder="🔍 Buscar jugador...">
+        <select id="album-filter" class="filter-select">
+          <option value="all">Todos</option>
+          <option value="gold">🥇 Oro</option>
+          <option value="silver">🥈 Plata</option>
+          <option value="bronze">🥉 Bronce</option>
+          <option value="special">⭐ Especial</option>
+          <option value="legend">👑 Leyenda</option>
+          <option value="holographic">🌈 Holo</option>
+        </select>
+        <select id="album-sort" class="filter-select">
+          <option value="newest">Más reciente</option>
+          <option value="oldest">Más antiguo</option>
+          <option value="name">Nombre A-Z</option>
+          <option value="overall">Mayor OVR</option>
+        </select>
+      </div>
+      <div id="album-grid" class="album-grid"></div>
+      <div id="album-empty" class="album-empty hidden">
+        <span class="icon">📒</span>
+        <p>Tu álbum está vacío</p>
+        <p class="hint">Diseña tu primer cróm en el Editor</p>
+      </div>
+    </main>
+
+    <!-- CARD DETAIL MODAL -->
+    <div id="detail-modal" class="modal hidden">
+      <div class="modal-overlay" id="detail-overlay"></div>
+      <div class="detail-container">
+        <button class="detail-close" id="detail-close">✕</button>
+        <div class="detail-card-stage">
+          <div class="card-3d" id="detail-card-3d">
+            <div class="card-face card-front" id="detail-card-front"></div>
+            <div class="card-face card-back" id="detail-card-back"></div>
+          </div>
+        </div>
+        <div class="detail-info" id="detail-info"></div>
+        <div class="detail-actions">
+          <button class="btn btn-primary" id="detail-edit">✏️ Editar</button>
+          <button class="btn btn-secondary" id="detail-export">📷 Exportar</button>
+          <button class="btn btn-danger" id="detail-delete">🗑️ Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE SEARCH MODAL -->
+    <div id="search-modal" class="modal hidden">
+      <div class="modal-overlay" id="search-overlay"></div>
+      <div class="search-container">
+        <div class="search-header">
+          <h3>🔍 Buscar jugador</h3>
+          <button class="search-close" id="search-close">✕</button>
+        </div>
+        <div class="search-input-zone">
+          <input type="text" id="search-query" class="search-input" placeholder="Ej: messi, ronaldo, mbappe...">
+          <button class="btn btn-primary" id="search-go">Buscar</button>
+        </div>
+        <div id="search-loading" class="search-loading hidden">
+          <span class="spinner"></span> Buscando imágenes...
+        </div>
+        <div id="search-results" class="search-results"></div>
+        <div id="search-empty" class="search-empty hidden">
+          <p>No se encontraron imágenes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <canvas id="export-canvas" hidden></canvas>
+  <script src="js/app.js"></script>
+</body>
+</html>

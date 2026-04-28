@@ -1,0 +1,29 @@
+{
+  "name": "AdrenalynXL Card Maker",
+  "short_name": "AXL Maker",
+  "description": "Diseñador de cromos de futbolistas AdrenalynXL",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d0d1a",
+  "theme_color": "#1a1a2e",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "categories": ["entertainment", "sports"],
+  "lang": "es"
+}
