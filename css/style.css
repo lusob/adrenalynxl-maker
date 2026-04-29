@@ -1583,6 +1583,8 @@ input[type="range"]::-moz-range-thumb {
 .search-result-item {
   position: relative;
   background: var(--surface);
+  width: 100%;
+  height: 0;
   border-radius: var(--radius-sm);
   overflow: hidden;
   cursor: pointer;
@@ -1601,6 +1603,7 @@ input[type="range"]::-moz-range-thumb {
   height: 100%;
   object-fit: contain;
   background: rgba(255,255,255,0.02);
+  display: block;
 }
 
 .search-result-item .search-result-name {

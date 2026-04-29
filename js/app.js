@@ -1411,13 +1411,13 @@
     $$('.bg-btn').forEach(b => b.classList.toggle('active', b.dataset.bg === S.specialBg));
     $$('.back-btn').forEach(b => b.classList.toggle('active', b.dataset.back === S.backStyle));
 
-    $('#input-pattern').value = S.pattern;
-    $('#input-bgcolor').value = S.bgColor;
-    $('#input-accent').value = S.accentColor;
-    $('#input-back-color').value = S.backColor;
-    $('#input-back-logo').value = S.backLogo;
-    $('#input-back-text').value = S.backText;
-    $('#input-back-logoimg').value = S.backLogoImg;
+    const patternInp = $('#input-pattern'); if (patternInp) patternInp.value = S.pattern;
+    const bgColorInp = $('#input-bgcolor'); if (bgColorInp) bgColorInp.value = S.bgColor;
+    const accentInp = $('#input-accent'); if (accentInp) accentInp.value = S.accentColor;
+    const backColorInp = $('#input-back-color'); if (backColorInp) backColorInp.value = S.backColor;
+    const backLogoInp = $('#input-back-logo'); if (backLogoInp) backLogoInp.value = S.backLogo;
+    const backTextInp = $('#input-back-text'); if (backTextInp) backTextInp.value = S.backText;
+    const backLogoImgInp = $('#input-back-logoimg'); if (backLogoImgInp) backLogoImgInp.value = S.backLogoImg;
 
     if (S.photoDataUrl) {
       $('#photo-label').textContent = 'Foto cargada';
