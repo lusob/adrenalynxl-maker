@@ -1322,25 +1322,26 @@
     e.stopPropagation();
     const album = getAlbum();
     const card = album.find(c => c.id === detailCardId);
-    if (!card) return;
-    /* Load card data into editor */
-    Object.assign(S, {
-      name: card.name, number: card.number, position: card.position,
-      team: card.team, league: card.league, country: card.country,
-      stats: { ...card.stats },
-      skills: { ...card.skills },
-      cardType: card.cardType,
-      specialBg: card.specialBg || 'default',
-      pattern: card.pattern || 'none',
-      bgColor: card.bgColor || '#1a1a2e',
-      accentColor: card.accentColor || '#e8b931',
-      photoDataUrl: card.photoDataUrl,
-      backStyle: card.backStyle || 'classic',
-      backColor: card.backColor || '#0d1b3e',
-      backLogo: card.backLogo || 'ADRENALYN XL',
-      backText: card.backText || '',
-      backLogoImg: card.backLogoImg || '',
-    });
+    if (!card) { toast('Error: cróm no encontrado'); return; }
+    try {
+      /* Load card data into editor */
+      Object.assign(S, {
+        name: card.name, number: card.number, position: card.position,
+        team: card.team, league: card.league, country: card.country,
+        stats: { ...(card.stats || {}) },
+        skills: { ...(card.skills || {}) },
+        cardType: card.cardType,
+        specialBg: card.specialBg || 'default',
+        pattern: card.pattern || 'none',
+        bgColor: card.bgColor || '#1a1a2e',
+        accentColor: card.accentColor || '#e8b931',
+        photoDataUrl: card.photoDataUrl,
+        backStyle: card.backStyle || 'classic',
+        backColor: card.backColor || '#0d1b3e',
+        backLogo: card.backLogo || 'ADRENALYN XL',
+        backText: card.backText || '',
+        backLogoImg: card.backLogoImg || '',
+      });
     syncForm();
     renderCard();
     closeDetail();
@@ -1357,6 +1358,10 @@
     localStorage.setItem('axl_album', JSON.stringify(album));
     updateAlbumCount();
     toast('Cróm cargado en el editor');
+  } catch(err) {
+    console.error('Edit error:', err);
+    toast('Error al cargar cróm: ' + err.message);
+  }
   });
 
   $('#detail-export').addEventListener('click', e => {
