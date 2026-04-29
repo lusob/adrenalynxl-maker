@@ -1622,6 +1622,43 @@ input[type="range"]::-moz-range-thumb {
   color: var(--text2);
 }
 
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+  /* Detail modal full-screen on mobile */
+  .modal {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .detail-container {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
+  }
+  .detail-card-stage .card-3d {
+    width: 160px;
+  }
+  .detail-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg2);
+    padding: 12px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* Album grid 2 columns on mobile */
+  .album-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Search results 2 columns on mobile */
+  .search-results {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
 /* ===== LANDSCAPE PHONE ===== */
 @media (max-height: 500px) and (orientation: landscape) {
   #view-editor.active {
