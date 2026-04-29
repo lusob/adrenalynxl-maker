@@ -1,4 +1,4 @@
-const CACHE = 'axl-maker-v2';
+const CACHE = 'axl-maker-v3';
 const FILES = ['./', './index.html', './css/style.css', './js/app.js', './js/service-worker.js', './manifest.json', './icons/icon.svg'];
 
 self.addEventListener('install', e => {
