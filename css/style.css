@@ -1328,6 +1328,7 @@ input[type="range"]::-moz-range-thumb {
   inset: 0;
   background: rgba(0,0,0,0.8);
   backdrop-filter: blur(6px);
+  z-index: 0;
 }
 
 .detail-container {
@@ -1566,10 +1567,17 @@ input[type="range"]::-moz-range-thumb {
   flex: 1;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
   padding-bottom: 16px;
   align-content: start;
+}
+
+@media (max-width: 480px) {
+  .search-results {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
 }
 
 .search-result-item {
