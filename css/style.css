@@ -1584,13 +1584,12 @@ input[type="range"]::-moz-range-thumb {
   position: relative;
   background: var(--surface);
   width: 100%;
-  height: 0;
+  padding-bottom: 150%;
   border-radius: var(--radius-sm);
   overflow: hidden;
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.2s;
-  aspect-ratio: 2/3;
 }
 
 .search-result-item:hover {
@@ -1599,11 +1598,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .search-result-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   background: rgba(255,255,255,0.02);
-  display: block;
 }
 
 .search-result-item .search-result-name {
