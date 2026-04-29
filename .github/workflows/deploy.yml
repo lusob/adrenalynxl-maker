@@ -20,22 +20,18 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Update deploy info
-        run: echo "{\"deployedAt\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"}" > deploy-info.json
+        run: |
+          echo "{\"deployedAt\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > deploy-info.json
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      - uses: actions/configure-pages@v4
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
