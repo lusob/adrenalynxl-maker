@@ -21,12 +21,12 @@
     }
 
   const TYPE_THEMES = {
-    gold:        { accent:'#e8b931', bg:['#2a1f00','#1a1a2e','#0d0d1a'] },
-    silver:      { accent:'#c0c0c0', bg:['#1a1a2e','#2a2a3e','#1a1a2e'] },
-    bronze:      { accent:'#cd7f32', bg:['#2a1a0a','#1a1a2e','#0d0d1a'] },
-    special:     { accent:'#da77f2', bg:['#1a0a2e','#2e1a4e','#0d0d1a'] },
-    legend:      { accent:'#ff6b6b', bg:['#2e0a0a','#4e1a1a','#1a0a0a'] },
-    holographic: { accent:'#00e5ff', bg:['#0a1a2e','#0a2e3e','#0a0a1a'] },
+    gold:        { accent:'#e8b931', bg:['#1a1500','#0d0d1a','#000000'] },
+    silver:      { accent:'#e0e0e0', bg:['#1a1a2e','#0d0d1a','#0a0a15'] },
+    bronze:      { accent:'#cd7f32', bg:['#1a0f00','#0d0a05','#050505'] },
+    special:     { accent:'#da77f2', bg:['#1a0020','#0d0015','#050008'] },
+    legend:      { accent:'#ff4444', bg:['#200000','#150000','#080000'] },
+    holographic: { accent:'#00e5ff', bg:['#001a20','#001015','#000808'] },
   };
 
   /* ===== STATE ===== */
@@ -41,8 +41,6 @@
     pattern: 'none',
     bgColor: '#1a1a2e',
     accentColor: '#e8b931',
-    isSpecial: false,
-    specialNumber: '',
     /* Back card */
     backStyle: 'classic',
     backColor: '#0d1b3e',
@@ -135,18 +133,28 @@
         <span class="card-skill-stars">${stars(d.skills[k])}</span>
       </div>`).join('');
 
-    const editionHTML = d.isSpecial && d.specialNumber ? `<span class="card-edition">${d.specialNumber}</span>` : '';
-
     const shineClass = d.specialBg !== 'default' ? ` card-shine ${d.specialBg}` : '';
 
     const badgeHTML = d.specialBg === 'ballondor'
       ? '<div class="card-vertical-badge ballondor">Ballon d\'Or</div>'
       : d.specialBg === 'kryptonite'
         ? '<div class="card-vertical-badge kryptonite">Kryptonite</div>'
-        : '';
+        : d.specialBg === 'diamond'
+          ? '<div class="card-vertical-badge diamond">Diamond</div>'
+          : d.specialBg === 'molten'
+            ? '<div class="card-vertical-badge molten">Molten</div>'
+            : d.specialBg === 'galaxy'
+              ? '<div class="card-vertical-badge galaxy">Galaxy</div>'
+              : d.cardType === 'legend'
+                ? '<div class="card-vertical-badge legend">Legend</div>'
+                : d.cardType === 'special'
+                  ? '<div class="card-vertical-badge special">Special</div>'
+                  : '';
+
+    const typeClass = d.cardType ? ` card-type-${d.cardType}` : '';
 
     container.innerHTML = `
-      <div class="card" style="--card-accent:${accent}">
+      <div class="card${typeClass}" style="--card-accent:${accent}">
         <div class="card-bg-layer" style="${bgStyle}"></div>
         ${d.pattern !== 'none' ? buildPattern(d.pattern) : ''}
         <div class="card-shine${shineClass}"></div>
@@ -172,7 +180,6 @@
         <div class="card-footer">
           <span class="card-league">${d.league}</span>
           <span class="card-country">${d.country || ''}</span>
-          ${editionHTML}
         </div>
       </div>`;
   }
@@ -241,7 +248,6 @@
   bind('#input-team', 'team');
   bind('#input-league', 'league');
   bind('#input-country', 'country');
-  bind('#input-special-num', 'specialNumber');
 
   $('#input-number').addEventListener('input', function () { S.number = this.value; renderCard(); });
 
@@ -503,12 +509,6 @@
   bind('#input-back-logo', 'backLogo');
   bind('#input-back-text', 'backText');
   bind('#input-back-logoimg', 'backLogoImg');
-
-  $('#input-special').addEventListener('change', function () {
-    S.isSpecial = this.checked;
-    $('#special-num-field').style.display = this.checked ? '' : 'none';
-    renderCard();
-  });
 
   /* ===== ALBUM ===== */
   function getAlbum() {
@@ -963,6 +963,16 @@
       drawVerticalBadge(ctx, W, H, 'Ballon d\'Or', '#ffd700', 'rgba(0,0,0,0.6)', 'rgba(255,215,0,0.5)');
     } else if (d.specialBg === 'kryptonite') {
       drawVerticalBadge(ctx, W, H, 'Kryptonite', '#00ff41', 'rgba(0,20,0,0.6)', 'rgba(0,255,65,0.5)');
+    } else if (d.specialBg === 'diamond') {
+      drawVerticalBadge(ctx, W, H, 'Diamond', '#b9f2ff', 'rgba(0,15,20,0.6)', 'rgba(185,242,255,0.5)');
+    } else if (d.specialBg === 'molten') {
+      drawVerticalBadge(ctx, W, H, 'Molten', '#ff6600', 'rgba(30,5,0,0.6)', 'rgba(255,102,0,0.5)');
+    } else if (d.specialBg === 'galaxy') {
+      drawVerticalBadge(ctx, W, H, 'Galaxy', '#c77dff', 'rgba(10,0,20,0.6)', 'rgba(199,125,255,0.5)');
+    } else if (d.cardType === 'legend') {
+      drawVerticalBadge(ctx, W, H, 'Legend', '#ff4444', 'rgba(30,0,0,0.6)', 'rgba(255,68,68,0.5)');
+    } else if (d.cardType === 'special') {
+      drawVerticalBadge(ctx, W, H, 'Special', '#da77f2', 'rgba(20,0,30,0.6)', 'rgba(218,119,242,0.5)');
     }
 
     /* Rating */
@@ -1057,12 +1067,6 @@
     if (d.country) {
       ctx.textAlign = 'center';
       ctx.fillText(d.country, W / 2, H - 30);
-    }
-
-    if (d.isSpecial && d.specialNumber) {
-      ctx.fillStyle = '#da77f2';
-      ctx.textAlign = 'right';
-      ctx.fillText(d.specialNumber, W - 30, H - 30);
     }
   }
 
@@ -1314,7 +1318,8 @@
   detail3d.addEventListener('click', () => detail3d.classList.toggle('flipped'));
 
   /* Detail actions */
-  $('#detail-edit').addEventListener('click', () => {
+  $('#detail-edit').addEventListener('click', e => {
+    e.stopPropagation();
     const album = getAlbum();
     const card = album.find(c => c.id === detailCardId);
     if (!card) return;
@@ -1329,8 +1334,6 @@
       pattern: card.pattern || 'none',
       bgColor: card.bgColor || '#1a1a2e',
       accentColor: card.accentColor || '#e8b931',
-      isSpecial: card.isSpecial,
-      specialNumber: card.specialNumber,
       photoDataUrl: card.photoDataUrl,
       backStyle: card.backStyle || 'classic',
       backColor: card.backColor || '#0d1b3e',
@@ -1356,7 +1359,8 @@
     toast('Cróm cargado en el editor');
   });
 
-  $('#detail-export').addEventListener('click', () => {
+  $('#detail-export').addEventListener('click', e => {
+    e.stopPropagation();
     const album = getAlbum();
     const card = album.find(c => c.id === detailCardId);
     if (!card) return;
@@ -1364,7 +1368,8 @@
     exportCanvas(expCanvas, `axl_${card.name || 'card'}_front.png`);
   });
 
-  $('#detail-delete').addEventListener('click', () => {
+  $('#detail-delete').addEventListener('click', e => {
+    e.stopPropagation();
     if (!confirm('¿Eliminar este cróm del álbum?')) return;
     let album = getAlbum();
     album = album.filter(c => c.id !== detailCardId);
@@ -1408,9 +1413,6 @@
     $('#input-back-logo').value = S.backLogo;
     $('#input-back-text').value = S.backText;
     $('#input-back-logoimg').value = S.backLogoImg;
-    $('#input-special').checked = S.isSpecial;
-    $('#special-num-field').style.display = S.isSpecial ? '' : 'none';
-    $('#input-special-num').value = S.specialNumber;
 
     if (S.photoDataUrl) {
       $('#photo-label').textContent = 'Foto cargada';
@@ -1430,9 +1432,7 @@
     S.name = ''; S.number = ''; S.position = 'MED';
     S.team = ''; S.league = 'LaLiga'; S.country = '';
     S.stats = {
-      tackling:30, marking:28, interceptions:25, heading:22,
-      passing:35, dribbling:32, vision:30, firsttouch:28,
-      pace:38, shooting:35, finishing:30, crossing:25,
+      def: 50, con: 60, ata: 55,
     };
     S.skills = { speed:3, control:4, strength:2 };
     S.cardType = 'gold';
@@ -1440,8 +1440,6 @@
     S.pattern = 'none';
     S.bgColor = '#1a1a2e';
     S.accentColor = '#e8b931';
-    S.isSpecial = false;
-    S.specialNumber = '';
     S.backStyle = 'classic';
     S.backColor = '#0d1b3e';
     S.backLogo = 'ADRENALYN XL';

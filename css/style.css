@@ -228,17 +228,12 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
   border-radius: calc(var(--radius) - 2px);
 }
 
-/* Holographic shine overlay */
+/* Background overlay - always visible */
 .card-shine {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 1;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.card-3d:hover .card-shine {
   opacity: 1;
 }
 
@@ -301,81 +296,80 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
 
 .card-shine.kryptonite {
   background:
-    /* Crystal facets */
-    linear-gradient(135deg, rgba(0,255,65,0.15) 25%, transparent 25%),
-    linear-gradient(225deg, rgba(0,255,65,0.15) 25%, transparent 25%),
-    linear-gradient(45deg, rgba(0,255,65,0.1) 25%, transparent 25%),
-    linear-gradient(315deg, rgba(0,255,65,0.1) 25%, transparent 25%),
-    /* Lightning bolts */
-    linear-gradient(175deg, transparent 40%, rgba(0,255,65,0.25) 40%, rgba(0,255,65,0.25) 41%, transparent 41%),
-    linear-gradient(175deg, transparent 55%, rgba(0,255,65,0.2) 55%, rgba(0,255,65,0.2) 56.5%, transparent 56.5%),
-    linear-gradient(175deg, transparent 70%, rgba(0,255,65,0.25) 70%, rgba(0,255,65,0.25) 71%, transparent 71%),
-    /* Glow spots */
-    radial-gradient(circle at 20% 25%, rgba(0,255,65,0.3) 0%, transparent 15%),
-    radial-gradient(circle at 80% 75%, rgba(0,255,65,0.25) 0%, transparent 12%),
-    radial-gradient(circle at 50% 50%, rgba(0,255,65,0.15) 0%, transparent 20%);
-  background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    /* Symmetrical crystal pattern */
+    radial-gradient(circle at 50% 50%, rgba(0,255,65,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, transparent 20%, rgba(0,255,65,0.08) 20%, rgba(0,255,65,0.08) 22%, transparent 22%),
+    radial-gradient(circle at 50% 50%, transparent 35%, rgba(0,255,65,0.06) 35%, rgba(0,255,65,0.06) 37%, transparent 37%),
+    radial-gradient(circle at 50% 50%, transparent 50%, rgba(0,255,65,0.04) 50%, rgba(0,255,65,0.04) 52%, transparent 52%),
+    /* Symmetrical diamond facets */
+    linear-gradient(45deg, transparent 48%, rgba(0,255,65,0.1) 48%, rgba(0,255,65,0.1) 50%, transparent 50%),
+    linear-gradient(135deg, transparent 48%, rgba(0,255,65,0.1) 48%, rgba(0,255,65,0.1) 50%, transparent 50%),
+    linear-gradient(225deg, transparent 48%, rgba(0,255,65,0.1) 48%, rgba(0,255,65,0.1) 50%, transparent 50%),
+    linear-gradient(315deg, transparent 48%, rgba(0,255,65,0.1) 48%, rgba(0,255,65,0.1) 50%, transparent 50%),
+    /* Corner crystals */
+    radial-gradient(circle at 20% 20%, rgba(0,255,65,0.15) 0%, transparent 12%),
+    radial-gradient(circle at 80% 20%, rgba(0,255,65,0.15) 0%, transparent 12%),
+    radial-gradient(circle at 20% 80%, rgba(0,255,65,0.15) 0%, transparent 12%),
+    radial-gradient(circle at 80% 80%, rgba(0,255,65,0.15) 0%, transparent 12%);
 }
 
 .card-shine.ballondor {
   background:
-    /* Gold radial glow */
-    radial-gradient(ellipse at 50% 30%, rgba(255,215,0,0.25) 0%, transparent 40%),
-    /* Concentric rings */
-    radial-gradient(circle at 50% 30%, transparent 18%, rgba(255,215,0,0.12) 18.5%, transparent 19%),
-    radial-gradient(circle at 50% 30%, transparent 28%, rgba(255,215,0,0.08) 28.5%, transparent 29%),
-    radial-gradient(circle at 50% 30%, transparent 38%, rgba(255,215,0,0.05) 38.5%, transparent 39%),
-    /* Gold leaf patterns */
-    linear-gradient(135deg, transparent 40%, rgba(255,215,0,0.1) 40%, rgba(255,215,0,0.1) 41%, transparent 41%),
-    linear-gradient(225deg, transparent 55%, rgba(255,215,0,0.08) 55%, rgba(255,215,0,0.08) 56%, transparent 56%),
-    /* Sparkle dots */
-    radial-gradient(circle 1px at 25% 20%, rgba(255,215,0,0.5), transparent),
-    radial-gradient(circle 1px at 75% 35%, rgba(255,215,0,0.4), transparent),
-    radial-gradient(circle 1px at 60% 60%, rgba(255,215,0,0.5), transparent),
-    radial-gradient(circle 1px at 35% 70%, rgba(255,215,0,0.4), transparent),
-    radial-gradient(circle 1px at 85% 55%, rgba(255,215,0,0.3), transparent);
+    /* Symmetrical gold pattern */
+    radial-gradient(circle at 50% 40%, rgba(255,215,0,0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 40%, transparent 15%, rgba(255,215,0,0.1) 15%, rgba(255,215,0,0.1) 17%, transparent 17%),
+    radial-gradient(circle at 50% 40%, transparent 25%, rgba(255,215,0,0.08) 25%, rgba(255,215,0,0.08) 27%, transparent 27%),
+    radial-gradient(circle at 50% 40%, transparent 35%, rgba(255,215,0,0.06) 35%, rgba(255,215,0,0.06) 37%, transparent 37%),
+    /* Symmetrical star rays */
+    linear-gradient(0deg, transparent 45%, rgba(255,215,0,0.08) 45%, rgba(255,215,0,0.08) 50%, transparent 50%),
+    linear-gradient(60deg, transparent 45%, rgba(255,215,0,0.06) 45%, rgba(255,215,0,0.06) 50%, transparent 50%),
+    linear-gradient(120deg, transparent 45%, rgba(255,215,0,0.06) 45%, rgba(255,215,0,0.06) 50%, transparent 50%),
+    linear-gradient(180deg, transparent 45%, rgba(255,215,0,0.08) 45%, rgba(255,215,0,0.08) 50%, transparent 50%),
+    linear-gradient(240deg, transparent 45%, rgba(255,215,0,0.06) 45%, rgba(255,215,0,0.06) 50%, transparent 50%),
+    linear-gradient(300deg, transparent 45%, rgba(255,215,0,0.06) 45%, rgba(255,215,0,0.06) 50%, transparent 50%),
+    /* Corner sparkles */
+    radial-gradient(circle at 15% 15%, rgba(255,215,0,0.2) 0%, transparent 8%),
+    radial-gradient(circle at 85% 15%, rgba(255,215,0,0.2) 0%, transparent 8%),
+    radial-gradient(circle at 15% 85%, rgba(255,215,0,0.2) 0%, transparent 8%),
+    radial-gradient(circle at 85% 85%, rgba(255,215,0,0.2) 0%, transparent 8%);
 }
 
 .card-shine.diamond {
   background:
-    /* Diamond facets - triangular cuts */
-    linear-gradient(60deg, transparent 40%, rgba(200,230,255,0.15) 40%, rgba(200,230,255,0.15) 40.5%, transparent 40.5%),
-    linear-gradient(120deg, transparent 40%, rgba(200,230,255,0.12) 40%, rgba(200,230,255,0.12) 40.5%, transparent 40.5%),
-    linear-gradient(60deg, transparent 60%, rgba(200,230,255,0.15) 60%, rgba(200,230,255,0.15) 60.5%, transparent 60.5%),
-    linear-gradient(120deg, transparent 60%, rgba(200,230,255,0.12) 60%, rgba(200,230,255,0.12) 60.5%, transparent 60.5%),
-    /* Center facet glow */
-    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 35%),
-    radial-gradient(ellipse at 50% 50%, rgba(200,230,255,0.1) 35%, transparent 50%),
-    /* Sparkle points */
-    radial-gradient(circle 2px at 30% 25%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(circle 2px at 70% 25%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(circle 2px at 50% 15%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(circle 2px at 30% 75%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(circle 2px at 70% 75%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(circle 1px at 45% 40%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(circle 1px at 55% 60%, rgba(255,255,255,0.8), transparent),
-    /* Edge highlights */
-    linear-gradient(0deg, rgba(200,230,255,0.1) 0%, transparent 8%),
-    linear-gradient(180deg, rgba(200,230,255,0.1) 0%, transparent 8%);
+    /* Symmetrical diamond facets */
+    radial-gradient(circle at 50% 50%, rgba(200,230,255,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, transparent 25%, rgba(200,230,255,0.1) 25%, rgba(200,230,255,0.1) 27%, transparent 27%),
+    radial-gradient(circle at 50% 50%, transparent 40%, rgba(200,230,255,0.08) 40%, rgba(200,230,255,0.08) 42%, transparent 42%),
+    /* Hexagonal facet pattern */
+    linear-gradient(30deg, transparent 47%, rgba(200,230,255,0.12) 47%, rgba(200,230,255,0.12) 50%, transparent 50%),
+    linear-gradient(90deg, transparent 47%, rgba(200,230,255,0.12) 47%, rgba(200,230,255,0.12) 50%, transparent 50%),
+    linear-gradient(150deg, transparent 47%, rgba(200,230,255,0.12) 47%, rgba(200,230,255,0.12) 50%, transparent 50%),
+    linear-gradient(210deg, transparent 47%, rgba(200,230,255,0.12) 47%, rgba(200,230,255,0.12) 50%, transparent 50%),
+    linear-gradient(270deg, transparent 47%, rgba(200,230,255,0.12) 47%, rgba(200,230,255,0.12) 50%, transparent 50%),
+    linear-gradient(330deg, transparent 47%, rgba(200,230,255,0.12) 47%, rgba(200,230,255,0.12) 50%, transparent 50%),
+    /* Corner highlights */
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 10%),
+    radial-gradient(circle at 75% 25%, rgba(255,255,255,0.15) 0%, transparent 10%),
+    radial-gradient(circle at 25% 75%, rgba(255,255,255,0.15) 0%, transparent 10%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.15) 0%, transparent 10%);
 }
 
 .card-shine.molten {
   background:
-    /* Lava cracks */
-    linear-gradient(170deg, transparent 30%, rgba(255,69,0,0.3) 30%, rgba(255,69,0,0.3) 30.5%, transparent 30.5%),
-    linear-gradient(185deg, transparent 45%, rgba(255,140,0,0.25) 45%, rgba(255,140,0,0.25) 45.8%, transparent 45.8%),
-    linear-gradient(165deg, transparent 60%, rgba(255,69,0,0.3) 60%, rgba(255,69,0,0.3) 60.4%, transparent 60.4%),
-    linear-gradient(178deg, transparent 75%, rgba(255,100,0,0.25) 75%, rgba(255,100,0,0.25) 75.6%, transparent 75.6%),
-    /* Ember glow spots */
-    radial-gradient(circle at 15% 20%, rgba(255,69,0,0.4) 0%, transparent 10%),
-    radial-gradient(circle at 85% 30%, rgba(255,140,0,0.35) 0%, transparent 8%),
-    radial-gradient(circle at 50% 50%, rgba(255,69,0,0.3) 0%, transparent 12%),
-    radial-gradient(circle at 25% 80%, rgba(255,100,0,0.4) 0%, transparent 9%),
-    radial-gradient(circle at 75% 70%, rgba(255,69,0,0.35) 0%, transparent 11%),
-    radial-gradient(circle at 40% 35%, rgba(255,200,0,0.2) 0%, transparent 6%),
-    radial-gradient(circle at 65% 85%, rgba(255,69,0,0.3) 0%, transparent 7%),
-    /* Dark base with heat haze */
-    radial-gradient(ellipse at 50% 60%, rgba(255,69,0,0.15) 0%, transparent 60%);
+    /* Symmetrical lava pattern */
+    radial-gradient(circle at 50% 50%, rgba(255,69,0,0.2) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, transparent 20%, rgba(255,69,0,0.12) 20%, rgba(255,69,0,0.12) 22%, transparent 22%),
+    radial-gradient(circle at 50% 50%, transparent 35%, rgba(255,140,0,0.1) 35%, rgba(255,140,0,0.1) 37%, transparent 37%),
+    /* Symmetrical crack pattern */
+    linear-gradient(45deg, transparent 48%, rgba(255,69,0,0.15) 48%, rgba(255,69,0,0.15) 50%, transparent 50%),
+    linear-gradient(135deg, transparent 48%, rgba(255,140,0,0.12) 48%, rgba(255,140,0,0.12) 50%, transparent 50%),
+    linear-gradient(225deg, transparent 48%, rgba(255,69,0,0.15) 48%, rgba(255,69,0,0.15) 50%, transparent 50%),
+    linear-gradient(315deg, transparent 48%, rgba(255,140,0,0.12) 48%, rgba(255,140,0,0.12) 50%, transparent 50%),
+    /* Corner embers */
+    radial-gradient(circle at 20% 20%, rgba(255,140,0,0.2) 0%, transparent 10%),
+    radial-gradient(circle at 80% 20%, rgba(255,69,0,0.2) 0%, transparent 10%),
+    radial-gradient(circle at 20% 80%, rgba(255,69,0,0.2) 0%, transparent 10%),
+    radial-gradient(circle at 80% 80%, rgba(255,140,0,0.2) 0%, transparent 10%);
 }
 
 @keyframes holoShift {
@@ -602,33 +596,111 @@ input, select, textarea, button { font-family: inherit; color: inherit; }
 /* Vertical badges for special cards */
 .card-vertical-badge {
   position: absolute;
-  right: 4px;
+  right: 2px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 6;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-size: 0.42rem;
+  font-size: 0.55rem;
   font-weight: 900;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  padding: 6px 3px;
-  border-radius: 2px;
+  padding: 8px 5px;
+  border-radius: 3px;
   pointer-events: none;
 }
 
 .card-vertical-badge.ballondor {
   color: #ffd700;
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,215,0,0.5);
-  text-shadow: 0 0 6px rgba(255,215,0,0.5);
+  background: rgba(0,0,0,0.65);
+  border: 1.5px solid rgba(255,215,0,0.6);
+  text-shadow: 0 0 8px rgba(255,215,0,0.6);
 }
 
 .card-vertical-badge.kryptonite {
   color: #00ff41;
-  background: rgba(0,20,0,0.6);
-  border: 1px solid rgba(0,255,65,0.5);
-  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+  background: rgba(0,20,0,0.65);
+  border: 1.5px solid rgba(0,255,65,0.6);
+  text-shadow: 0 0 8px rgba(0,255,65,0.6);
+}
+
+.card-vertical-badge.legend {
+  color: #ff4444;
+  background: rgba(30,0,0,0.65);
+  border: 1.5px solid rgba(255,68,68,0.6);
+  text-shadow: 0 0 8px rgba(255,68,68,0.6);
+}
+
+.card-vertical-badge.special {
+  color: #da77f2;
+  background: rgba(20,0,30,0.65);
+  border: 1.5px solid rgba(218,119,242,0.6);
+  text-shadow: 0 0 8px rgba(218,119,242,0.6);
+}
+
+.card-vertical-badge.diamond {
+  color: #b9f2ff;
+  background: rgba(0,15,20,0.65);
+  border: 1.5px solid rgba(185,242,255,0.6);
+  text-shadow: 0 0 8px rgba(185,242,255,0.6);
+}
+
+.card-vertical-badge.molten {
+  color: #ff6600;
+  background: rgba(30,5,0,0.65);
+  border: 1.5px solid rgba(255,102,0,0.6);
+  text-shadow: 0 0 8px rgba(255,102,0,0.6);
+}
+
+.card-vertical-badge.galaxy {
+  color: #c77dff;
+  background: rgba(10,0,20,0.65);
+  border: 1.5px solid rgba(199,125,255,0.6);
+  text-shadow: 0 0 8px rgba(199,125,255,0.6);
+}
+
+/* Card type visual effects */
+.card.card-type-gold {
+  box-shadow: inset 0 0 30px rgba(232,185,49,0.2), inset 0 0 60px rgba(232,185,49,0.1);
+}
+.card.card-type-gold .card-bg-layer {
+  background: linear-gradient(160deg, #1a1500 0%, #0d0d1a 50%, #000000 100%) !important;
+}
+
+.card.card-type-silver {
+  box-shadow: inset 0 0 30px rgba(192,192,192,0.15), inset 0 0 60px rgba(192,192,192,0.05);
+}
+.card.card-type-silver .card-bg-layer {
+  background: linear-gradient(160deg, #1a1a2e 0%, #0d0d1a 50%, #0a0a15 100%) !important;
+}
+
+.card.card-type-bronze {
+  box-shadow: inset 0 0 30px rgba(205,127,50,0.2), inset 0 0 60px rgba(205,127,50,0.1);
+}
+.card.card-type-bronze .card-bg-layer {
+  background: linear-gradient(160deg, #1a0f00 0%, #0d0a05 50%, #050505 100%) !important;
+}
+
+.card.card-type-special {
+  box-shadow: inset 0 0 40px rgba(218,119,242,0.3), inset 0 0 80px rgba(218,119,242,0.15);
+}
+.card.card-type-special .card-bg-layer {
+  background: linear-gradient(160deg, #1a0020 0%, #0d0015 50%, #050008 100%) !important;
+}
+
+.card.card-type-legend {
+  box-shadow: inset 0 0 40px rgba(255,68,68,0.35), inset 0 0 80px rgba(255,68,68,0.2);
+}
+.card.card-type-legend .card-bg-layer {
+  background: linear-gradient(160deg, #200000 0%, #150000 50%, #080000 100%) !important;
+}
+
+.card.card-type-holographic {
+  box-shadow: inset 0 0 40px rgba(0,229,255,0.3), inset 0 0 80px rgba(0,229,255,0.15);
+}
+.card.card-type-holographic .card-bg-layer {
+  background: linear-gradient(160deg, #001a20 0%, #001015 50%, #000808 100%) !important;
 }
 
 /* ===== CARD BACK ===== */
